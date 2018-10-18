@@ -41,6 +41,7 @@
       })
     },
     mounted() {
+      this.$store.commit('index/block', false)
       this.getData()
     },
     methods: {

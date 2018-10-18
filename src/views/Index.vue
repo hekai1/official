@@ -1,5 +1,6 @@
 <template>
   <div class="wrap">
+    <!-- 车辆选择 -->
     <div class="brand-list"  ref="MasterBrandList">
       <div>
         <div v-for="(item, index) in brandList" :key="index" :id="item.title">
@@ -13,9 +14,11 @@
         </div>
       </div>
     </div>
+    <!-- 侧边栏字母 -->
     <div class="brand-bar">
       <span v-for="(item, ind) in brandList" :key="ind" :data-index="ind" @touchstart="touchstart(ind, $event)" @touchmove.stop.prevent="touchmove" @touchend="touchend">{{item.title}}</span>
     </div>
+    <!-- 车系选择 -->
     <div id="car-system" :class=" block ? 'active' : '' ">
       <div class="mark-list">
         <div v-for="(item, index) in makeList" :key="index">
@@ -67,6 +70,7 @@
       this.$store.commit('index/isShow', false)
     },
     methods: {
+      // better-scroll实例
       myScroll() {
         this._initscroll = new bScroll(this.$refs.MasterBrandList, {
           probeType: 3,
@@ -77,10 +81,12 @@
       ...mapActions({
         getBrandList:'index/getBrandList'
       }),
+      // 手指滑动开始
       touchstart(id, e) {
         this.$store.commit('index/id', id)
         this.$store.commit('index/start', e.changedTouches[0].clientY)
       },
+      // 手指滑动
       touchmove(e) {
         let newID = this.id + parseInt((e.changedTouches[0].clientY - this.start) / e.target.clientHeight)
         if(newID < 0) {
@@ -91,6 +97,7 @@
         }
         this._initscroll.scrollToElement(this.$refs['a'+newID][0])
       },
+      // 手指滑动结束
       touchend(e) {
         console.log(e)
         let newID = this.id + parseInt((e.changedTouches[0].clientY - this.start) / e.target.clientHeight)
@@ -102,11 +109,13 @@
         }
         this._initscroll.scrollToElement(this.$refs['a'+newID][0])
       },
+      // 点击车辆 获取车系列表
       carBrandList(MasterID) {
         _hmt.push(['_trackEvent', '汽车报价', 'tap', '品牌点击'])
         this.$store.dispatch('index/getMakeList', MasterID)
         this.$store.commit('index/block', true)
       },
+      // 向右滑动处理
       moveRight() {
         //返回角度
           function GetSlideAngle(dx, dy) {
@@ -167,8 +176,11 @@
       }
     },
     mounted() {
+      // 获取车辆数据
       this.getBrandList()
+      // 判断向右滑动
       this.moveRight()
+      // 初始化scroll
       this.myScroll()
     }
   }

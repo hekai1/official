@@ -7,7 +7,7 @@
     <div class="con">
       <ul>
         <li v-for="(item, index) in imgList" :key="index">
-          <img v-for="(value, key) in item.List" :key="key" :src="`${value.Url.replace('{0}', value.LowSize)}`" >
+          <img v-for="(value, key) in item.List" :key="key" v-lazy="`${value.Url.replace('{0}', value.LowSize)}`" >
           <div @click="clickImgType(item.Id)">
             <p>{{item.Name}}</p>
             <p>{{item.Count}}&gt;</p>
@@ -17,18 +17,15 @@
     </div>
     <div :class="block ? 'block moreList':'moreList'" ref="moreImg" @click="imgClick">
       <p ref="imgItem">
-        <img v-for="(item, index) in imgMoreList" :key="index" :src="`${item.Url.replace('{0}', item.LowSize)}`" alt="" :data-id="index">
+        <img v-for="(item, index) in imgMoreList" :key="index" v-lazy="`${item.Url.replace('{0}', item.LowSize)}`" alt="" :data-id="index">
       </p>
     </div>
     <!-- 轮播图片 -->
     <section :class="block ? 'block swiper':'swiper'" v-show="showSwiper" @click="swiperClick">
       <swiper ref="mySwiper" :options="swiperOption">
-         <!-- slides  -->
         <swiper-slide v-for="(item, index) in imgMoreList" :key="index">
             <img :src="`${item.Url.replace('{0}', item.HighSize)}`" class="swiper-lazy"/>
-            <!-- <div class="swiper-lazy-preloader"></div> -->
         </swiper-slide>
-         <!-- Optional controls -->
         <div class="swiper-pagination"  slot="pagination"></div>
       </swiper>
       <p>{{`${1+current*1}/${imgMoreList.length}`}}</p>
@@ -77,8 +74,8 @@
     },
     mounted() {
       this.getImg();
-      console.log(this.$store)
       this.$store.commit('img/clearImgList')
+      this.$store.commit('img/show', false)
       let func = debounce(this.scroll, 100);
       this.$refs.moreImg.addEventListener('scroll', func)
     },
@@ -147,6 +144,7 @@
         }
         this.$store.commit('img/block', false)
       },
+      // 点击进入更多图片
       clickImgType(ImageID) {
         console.log(ImageID)
         this.$store.commit('img/block', true)

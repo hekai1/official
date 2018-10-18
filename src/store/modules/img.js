@@ -31,6 +31,9 @@ const mutations = {
     console.log(payload.id)
     state.showSwiper = payload.show;
     state.current = payload.id
+  },
+  show(state, payload) {
+    state.showSwiper = payload
   }
 }
 
