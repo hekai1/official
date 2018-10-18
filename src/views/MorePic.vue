@@ -57,25 +57,22 @@
       },
       swiperOption() {
         let that = this;
-            return {
-                lazy: {
-                    // loadPrevNext: true,
-                },
-                on: {
-                    slideChange: function(){
-                        if (this.activeIndex > (that.Page-1)*30-5){
-                            that.getImgList({
-                                SerialID: 2593,
-                                ImageID: 6
-                            });
-                        }
-                        that.changeSwiper({
-                            id: this.activeIndex,
-                            show: true
-                        })
-                    },
-                },
-            }
+        return {
+          on: {
+            slideChange: function(){
+              if (this.activeIndex > (that.Page-1)*30-5){
+                that.getImgList({
+                  SerialID: this.$route.query.SerialID,
+                  ImageID: this.ImageID
+                });
+              }
+              that.changeSwiper({
+                id: this.activeIndex,
+                show: true
+              })
+            },
+          },
+        }
       }
     },
     mounted() {

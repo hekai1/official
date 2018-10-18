@@ -103,6 +103,7 @@
         this._initscroll.scrollToElement(this.$refs['a'+newID][0])
       },
       carBrandList(MasterID) {
+        _hmt.push(['_trackEvent', '汽车报价', 'tap', '品牌点击'])
         this.$store.dispatch('index/getMakeList', MasterID)
         this.$store.commit('index/block', true)
       },
