@@ -21,24 +21,30 @@
       </p>
     </div>
     <!-- 轮播图片 -->
-    <section :class="block ? 'block swiper':'swiper'" v-show="showSwiper" @click="swiperClick">
-      <swiper ref="mySwiper" :options="swiperOption">
-        <swiper-slide v-for="(item, index) in imgMoreList" :key="index">
-            <img :src="`${item.Url.replace('{0}', item.HighSize)}`" class="swiper-lazy"/>
+    <div :class="block ? 'block swiper':'swiper'" v-show="showSwiper" @click="swiperClick">
+      <swiper :options="swiperOption" ref="mySwiper">
+        <!-- slides -->
+        <swiper-slide v-for="(item,index) in imgMoreList" :key="index">
+          <img :src="`${item.Url.replace('{0}', item.HighSize)}`" alt="">
         </swiper-slide>
+        <!-- Optional controls -->
         <div class="swiper-pagination"  slot="pagination"></div>
       </swiper>
-      <p>{{`${1+current*1}/${imgMoreList.length}`}}</p>
-    </section>
+      <p>{{1+current*1}}/{{imgMoreList.length}}</p>
+    </div>
   </div>
 </template>
 <script>
   import {mapState, mapActions, mapMutations} from 'vuex';
   import {debounce} from '@/utils/utils'
-  import 'swiper/dist/css/swiper.css';
-  import { swiper, swiperSlide } from 'vue-awesome-swiper';
+  import { swiper, swiperSlide} from 'vue-awesome-swiper'
+  import 'swiper/dist/css/swiper.css'
   export default {
     name: 'morePic',
+    components: {
+      swiper,
+      swiperSlide
+    },
     computed: {
       ...mapState({
         imgList: state => state.img.imgList,
@@ -57,18 +63,19 @@
         return {
           on: {
             slideChange: function(){
-              if (this.activeIndex > (that.Page-1)*30-5){
-                that.getImgList({
-                  SerialID: this.$route.query.SerialID,
-                  ImageID: this.ImageID
-                });
+              if(this.activeIndex > ((that.Page-1)*30)-5) {
+                that.getMoreImgList({
+                  SerialID: that.$route.query.SerialID,
+                  ImageID: that.ImageID,
+                  Page: that.Page
+                })
               }
               that.changeSwiper({
                 id: this.activeIndex,
                 show: true
               })
-            },
-          },
+            }
+          }
         }
       }
     },
@@ -79,26 +86,20 @@
       let func = debounce(this.scroll, 100);
       this.$refs.moreImg.addEventListener('scroll', func)
     },
-    components: {
-        swiper,
-        swiperSlide
-    },
     methods: {
       // 图片点击
       imgClick(e){
-        let id = e.target.dataset.id;
-        console.log(id)
+        let id = e.target.dataset.id
         this.changeSwiper({
-          id,
-          show: true
-        });
+          show: true,
+          id: id
+        })
         this.swiper.slideTo(id, 1000, false)
       },
-      // swiper点击
-      swiperClick(e){
-        if (e.target == e.currentTarget){
+      swiperClick(e) {
+        if(e.target.nodeName === 'DIV') {
           this.changeSwiper({
-            show:false
+            show: false
           })
         }
       },
@@ -126,7 +127,6 @@
         changeSwiper: 'img/changeSwiper'
       }),
       getImg() {
-        console.log(this.$route.query.SerialID)
         if(this.$route.query.ColorId) {
           this.getImgList({
             SerialID: this.$route.query.SerialID,
@@ -146,10 +146,8 @@
       },
       // 点击进入更多图片
       clickImgType(ImageID) {
-        console.log(ImageID)
         this.$store.commit('img/block', true)
         this.$store.commit('img/ImageID', ImageID)
-        console.log(this.Page)
         if(this.$route.query.ColorId) {
           this.getMoreImgList({
             SerialID: this.$route.query.SerialID,
@@ -211,6 +209,7 @@
   z-index: 101;
   background: rgba(0,0,0,1);
   display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }

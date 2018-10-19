@@ -13,9 +13,11 @@ const state = {
 const mutations = {
   GETIMGLIST(state, payload) {
     state.imgList = payload
+    console.log(state.imgList)
   },
   GETMOREIMGLIST(state, payload) {
     state.imgMoreList = state.imgMoreList.concat(payload.List)
+    console.log(state.imgMoreList)
     state.Page++;
   },
   block(state, payload) {

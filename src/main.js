@@ -10,7 +10,7 @@ import './css/alert.css'
 
 Vue.use(VueLazyLoad, {
   preLoad: 1,
-  loading: require('./assets/icon-brand.jpg'),
+  loading: 'https://img.zcool.cn/community/0132a45975569da8012193a3e6a1e3.gif',
   attempt: 1
 })
 Vue.use(Element)
